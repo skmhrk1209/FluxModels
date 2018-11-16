@@ -1,6 +1,6 @@
 using Base
 using Flux
-#using CuArrays
+# using CuArrays
 
 train_images = float.(Flux.Data.MNIST.images(:train))
 train_labels = Flux.onehotbatch(Flux.Data.MNIST.labels(:train), 0:9)
@@ -27,4 +27,4 @@ model = gpu(Chain(
 loss(x, y) = Flux.crossentropy(model(x), y)
 accuracy(x, y) = mean(Flux.onecold(model(x)) .== Flux.onecold(y))
 
-Flux.train!(loss, train, ADAM(params(model)), cb=Flux.throttle(() -> @show(accuracy(test_images, test_labels)), 10))
+Flux.train!(loss, train_data, ADAM(params(model)), cb=Flux.throttle(() -> @show(accuracy(test_images, test_labels)), 10))
