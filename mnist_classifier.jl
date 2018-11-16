@@ -14,14 +14,14 @@ test_images = cat(float.(Flux.Data.MNIST.images(:test))..., dims=4) |> gpu
 test_labels = Flux.onehotbatch(Flux.Data.MNIST.labels(:test), 0:9) |> gpu
 
 model = gpu(Chain(
-   Conv((3, 3), 1=>32, relu, pad=(1, 1), stride=(1, 1)),
-   MaxPool((2,2), pad=(0, 0), stride=(2, 2)),
-   Conv((3, 3), 32=>64, relu, pad=(1, 1), stride=(1, 1)),
-   MaxPool((2,2), pad=(0, 0), stride=(2, 2)),
-   x -> reshape(x, :, size(x, 4)),
-   Dense(7 * 7 * 64, 1024),
-   Dense(1024, 10), 
-   softmax
+    Conv((3, 3), 1=>32, relu, pad=(1, 1), stride=(1, 1)),
+    MaxPool((2,2), pad=(0, 0), stride=(2, 2)),
+    Conv((3, 3), 32=>64, relu, pad=(1, 1), stride=(1, 1)),
+    MaxPool((2,2), pad=(0, 0), stride=(2, 2)),
+    x -> reshape(x, :, size(x, 4)),
+    Dense(7 * 7 * 64, 1024),
+    Dense(1024, 10), 
+    softmax
 ))
 
 loss(x, y) = Flux.crossentropy(model(x), y)
