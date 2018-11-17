@@ -20,12 +20,12 @@ loss(x) = Flux.mse(model(x), x)
 
 Flux.@epochs 10 Flux.train!(loss, train_data, ADAM(params(model)), cb=Flux.throttle(() -> @show(loss(test_data...)), 10))
 
-compose(f, fs...) = isempty(fs) ? (xs...) -> f(xs) : (xs...) -> compose(fs...)(f(xs))
+compose(f, fs...) = isempty(fs) ? (xs...) -> f(xs...) : (xs...) -> compose(fs...)(f(xs...))
 
 picked = rand(test_images, 10)
 generated = map(compose(
     image -> cpu(model)(float(vec(image))), 
-    vec -> Gray.(reshape(clamp.(vec), 0, 1), 28, 28)
+    vector -> Gray.(reshape(clamp.(vector, 0, 1), 28, 28))
 ), picked)
 
 save("image.png", hcat(vcat.(picked, generated)...))
